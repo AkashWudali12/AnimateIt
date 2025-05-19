@@ -2,23 +2,48 @@ import React, { useState, useRef, useEffect } from 'react';
 import styles from './ChatBox.module.css';
 import DiagramAnimation from './DiagramAnimation.jsx';
 
-// Dummy bot reply for demonstration
-const getBotReply = (userMsg) => {
-  if (!userMsg.trim()) return null;
-  // Example: always return a two-node linked list diagram
-  return [
-    { type: 'node', x: 50, y: 30, value: 1 },
-    { type: 'arrow', x1: 90, y1: 50, x2: 150, y2: 50 },
-    { type: 'node', x: 150, y: 30, value: 2 }
-  ];
-};
+// Chemistry animation SVGs: H2O formation
+const chemistrySvgs = [
+  // Step 1: Show two H atoms and one O atom
+  <svg width="300" height="120" viewBox="0 0 300 120">
+    <circle cx="60" cy="60" r="28" fill="#60a5fa" />
+    <text x="60" y="67" textAnchor="middle" fontSize="24" fill="#fff">H</text>
+    <circle cx="240" cy="60" r="28" fill="#f87171" />
+    <text x="240" y="67" textAnchor="middle" fontSize="24" fill="#fff">O</text>
+    <circle cx="150" cy="100" r="28" fill="#60a5fa" />
+    <text x="150" y="107" textAnchor="middle" fontSize="24" fill="#fff">H</text>
+  </svg>,
+  // Step 2: Show bonds forming
+  <svg width="300" height="120" viewBox="0 0 300 120">
+    <circle cx="60" cy="60" r="28" fill="#60a5fa" />
+    <text x="60" y="67" textAnchor="middle" fontSize="24" fill="#fff">H</text>
+    <circle cx="240" cy="60" r="28" fill="#f87171" />
+    <text x="240" y="67" textAnchor="middle" fontSize="24" fill="#fff">O</text>
+    <circle cx="150" cy="100" r="28" fill="#60a5fa" />
+    <text x="150" y="107" textAnchor="middle" fontSize="24" fill="#fff">H</text>
+    <line x1="80" y1="70" x2="220" y2="70" stroke="#222" strokeWidth="4" />
+    <line x1="75" y1="75" x2="150" y2="100" stroke="#222" strokeWidth="4" />
+    <line x1="225" y1="75" x2="150" y2="100" stroke="#222" strokeWidth="4" />
+  </svg>,
+  // Step 3: Show the H2O molecule
+  <svg width="300" height="120" viewBox="0 0 300 120">
+    <circle cx="120" cy="80" r="28" fill="#60a5fa" />
+    <text x="120" y="87" textAnchor="middle" fontSize="24" fill="#fff">H</text>
+    <circle cx="180" cy="80" r="28" fill="#60a5fa" />
+    <text x="180" y="87" textAnchor="middle" fontSize="24" fill="#fff">H</text>
+    <circle cx="150" cy="40" r="32" fill="#f87171" />
+    <text x="150" y="50" textAnchor="middle" fontSize="28" fill="#fff">O</text>
+    <line x1="150" y1="72" x2="120" y2="80" stroke="#222" strokeWidth="4" />
+    <line x1="150" y1="72" x2="180" y2="80" stroke="#222" strokeWidth="4" />
+  </svg>
+];
 
 export default function ChatBox() {
   const [messages, setMessages] = useState([
     { sender: 'bot', text: "Hi! I'm your assistant. How can I help you today?" }
   ]);
   const [input, setInput] = useState('');
-  const [displayDiagram, setDisplayDiagram] = useState({ elements: null, key: 0 });
+  const [displayDiagram, setDisplayDiagram] = useState(null);
   const chatEndRef = useRef(null);
   const diagramKeyRef = useRef(1);
 
@@ -33,33 +58,24 @@ export default function ChatBox() {
     setMessages((msgs) => [...msgs, { sender: 'user', text: userMsg }]);
     setInput('');
     setTimeout(() => {
-      const elements = getBotReply(userMsg);
-      if (elements) {
-        diagramKeyRef.current += 1;
-        setDisplayDiagram({ elements, key: diagramKeyRef.current });
-        setMessages((msgs) => [
-          ...msgs,
-          { sender: 'bot', text: 'Diagram rendered.' }
-        ]);
-      } else {
-        setMessages((msgs) => [
-          ...msgs,
-          { sender: 'bot', text: 'Please enter a message.' }
-        ]);
-      }
+      diagramKeyRef.current += 1;
+      setDisplayDiagram({ svgs: chemistrySvgs, key: diagramKeyRef.current });
+      setMessages((msgs) => [
+        ...msgs,
+        { sender: 'bot', text: 'Chemistry animation rendered.' }
+      ]);
     }, 600);
   };
 
   return (
     <div className={styles.container}>
       <div className={styles.leftPanel}>
-        {displayDiagram.elements && (
+        {displayDiagram && displayDiagram.svgs && (
           <DiagramAnimation
             key={displayDiagram.key}
-            elements={displayDiagram.elements}
-            svgWidth={250}
-            svgHeight={100}
-            viewBox="0 0 250 100"
+            svgs={displayDiagram.svgs}
+            width={300}
+            height={140}
           />
         )}
       </div>

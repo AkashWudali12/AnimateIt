@@ -1,0 +1,1 @@
+Need to run brew install mactex for manim to work so it has latex.
