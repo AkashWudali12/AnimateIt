@@ -1,1 +1,8 @@
 Need to run brew install mactex for manim to work so it has latex.
+
+Instructions for chatbot
+- when you are stacking elements, never stack on the same elements with the same buf value
+this will lead to elements stacking
+- Don't write expressions as one string, instead break them up into multiple strings.
+- Write all expressions as MathTex("term 1", "term 2"), if you need to put spaces between terms,
+then add tabs.
